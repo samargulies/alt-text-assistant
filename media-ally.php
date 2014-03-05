@@ -2,14 +2,13 @@
 /*
 Plugin Name: Media Ally
 Plugin URI: http://stephanieleary.com
-Version: 0.1
+Version: 0.2.1
 Author: Stephanie Leary
 Author URI: http://stephanieleary.com
 Description: Provides a report on the accessibility of your media files.
 Tags: accessibility, a11y, media, images, video, audio, transcripts, alt
 License: GPL2
 */
-
 
 // Register alt text column
 function media_ally_columns($columns) {
@@ -21,6 +20,7 @@ add_filter('manage_media_columns', 'media_ally_columns');
 
 // Filter for Media Library that only displays only images without alt text
 function media_ally_column_filter( $vars ) {
+	
     if ( isset( $vars['orderby'] ) && 'ally_column' === $vars['orderby'] ) {
         $vars = array_merge( $vars, array(
 		    'post_mime_type' => 'image', 
@@ -71,13 +71,11 @@ function media_ally_ally_column($column, $id) {
 			
 		} else  {
 			// trim alt text to 100 characters
-			if( strlen($alt) > 100 )
+			if( strlen($alt) > 100 ) {
 				$alt = substr($alt, 0, 100) . '&hellip;';
+			}
 			echo "<span class='media_ally-alt'>$alt</span>";
-			
 		}
-		
 	}
-	
 }
 add_action('manage_media_custom_column', 'media_ally_ally_column', 10, 2);
