@@ -79,3 +79,13 @@ function media_ally_ally_column($column, $id) {
 	}
 }
 add_action('manage_media_custom_column', 'media_ally_ally_column', 10, 2);
+
+// Insert js to require alt tag when inserting a single image
+// TODO: only load when the media mananger is loaded
+function media_ally_enqueue_scripts() {
+	
+	wp_enqueue_script( 'media-ally_require-alt-tag', plugins_url('/media-ally.js', __FILE__), array('media-upload') );
+	
+}
+add_action('admin_enqueue_scripts', 'media_ally_enqueue_scripts', 999, true);
+
