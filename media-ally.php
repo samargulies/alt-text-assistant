@@ -67,7 +67,7 @@ function media_ally_ally_column($column, $id) {
       	$alt = get_post_meta( $id, '_wp_attachment_image_alt', true );
 		
 		if ( empty( $alt ) ) {
-			echo '<a href="'.get_edit_post_link( $id ).'#attachment_alt" class="media_ally-no-alt">'.__('Add alt text', 'media_ally').'</a>';
+			echo '<a href="' . get_edit_post_link( $id ).'#attachment_alt" class="media_ally-no-alt">'.__('Add alt text', 'media_ally') . '</a>';
 			
 		} else  {
 			// trim alt text to 100 characters
@@ -143,7 +143,7 @@ function media_ally_require_alt_text_settings_field() {
 	?>
 	<label for="media_ally_require_alt_text">
 	<input id='media_ally_require_alt_text' name='media_ally[require_alt_text]' type='checkbox' value="1" <?php checked( $options['require_alt_text'], 1 ); ?> />
-	Require alt text
+	Require alt text when inserting images
 	</label>
 	<?php
 	

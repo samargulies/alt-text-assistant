@@ -1,7 +1,7 @@
 (function($, _){
 
 	var media = wp.media, l10n;
-		
+
 	// Link any localized strings.
 	l10n = media.view.l10n = typeof _wpMediaViewsL10n === 'undefined' ? {} : _wpMediaViewsL10n;
 
@@ -31,9 +31,9 @@
 		
 						if( !attachment.attributes.alt ) {
 							// caught ya!
-							// console.log("clicked, but no attachment!", selection);
+							//console.log("clicked, but no attachment!", selection);
 					
-							alert('Please enter Alt Text to insert this image');
+							alert('Please add alt text to insert this image');
 							jQuery('.attachment-details .setting[data-setting=alt] span').css('color','#C00');
 							jQuery('.attachment-details .setting[data-setting=alt]').css('background-color','#FFE5E5');
 							jQuery('.attachment-details .setting[data-setting=alt] input').select();
