@@ -2,7 +2,7 @@
 /*
 Plugin Name: Media Ally
 Plugin URI: http://stephanieleary.com
-Version: 0.2.1
+Version: 0.3
 Author: Stephanie Leary
 Author URI: http://stephanieleary.com
 Description: Provides a report on the accessibility of your media files.
@@ -80,12 +80,71 @@ function media_ally_ally_column($column, $id) {
 }
 add_action('manage_media_custom_column', 'media_ally_ally_column', 10, 2);
 
-// Insert js to require alt tag when inserting a single image
+// Insert js to require alt text when inserting a single image
 // TODO: only load when the media mananger is loaded
 function media_ally_enqueue_scripts() {
 	
-	wp_enqueue_script( 'media-ally_require-alt-tag', plugins_url('/media-ally.js', __FILE__), array('media-views') );
+	$options = get_option('media_ally');
+	
+	if( $options['require_alt_text'] ) {
+		
+		wp_enqueue_script( 'media-ally-require-alt-text', plugins_url('/media-ally.js', __FILE__), array('media-views') );
+		
+	}
 	
 }
 add_action('admin_enqueue_scripts', 'media_ally_enqueue_scripts');
 
+function media_ally_settings_init() {
+	
+	add_settings_section(
+		'media_ally_alt_text_settings',
+		'Image alt text',
+		'media_ally_alt_text_settings_intro',
+		'media'
+	);
+	
+	add_settings_field(
+		'media_ally_require_alt_text', 
+		'Require alt text', 
+		'media_ally_require_alt_text_settings_field', 
+		'media', 
+		'media_ally_alt_text_settings'
+	);
+	
+	register_setting( 'media', 'media_ally', 'media_ally_options_validate' );
+	
+	
+}
+add_action('admin_init', 'media_ally_settings_init');
+
+function media_ally_options_validate( $options_raw ) {
+	
+	$options = array();
+	
+	$options['require_alt_text'] = ( $options_raw['require_alt_text'] ) ? 1 : 0;
+	
+	return $options;
+}
+
+function media_ally_alt_text_settings_intro() {
+	?>
+	<p>Alternative text, or alt text, provides replacement content for users when images cannot be displayed normally. Specifying alt text assists many users, such as users who are visually impaired, or users who use speech synthesizers.</p>
+	
+	<p>It is required that all images contain accurate, descriptive alt text. When enabled, the setting below will force all users to enter alt text before they can insert images into a post or page.</p>
+	
+	<?php
+}
+
+function media_ally_require_alt_text_settings_field() {
+	
+	$options = get_option('media_ally');
+
+	?>
+	<label for="media_ally_require_alt_text">
+	<input id='media_ally_require_alt_text' name='media_ally[require_alt_text]' type='checkbox' value="1" <?php checked( $options['require_alt_text'], 1 ); ?> />
+	Require alt text
+	</label>
+	<?php
+	
+}
