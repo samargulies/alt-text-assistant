@@ -30,13 +30,11 @@
 					$.when.apply( $, selection.map( function( attachment ) {
 		
 						if( !attachment.attributes.alt ) {
-							// caught ya!
-							//console.log("clicked, but no attachment!", selection);
-					
-							alert('Please add alt text to insert this image');
-							jQuery('.attachment-details .setting[data-setting=alt] span').css('color','#C00');
-							jQuery('.attachment-details .setting[data-setting=alt]').css('background-color','#FFE5E5');
-							jQuery('.attachment-details .setting[data-setting=alt] input').select();
+							// caught ya!					
+							alert( altTextAssistant.alertMessage );
+							$('.attachment-details .setting[data-setting=alt] span').css('color','#C00');
+							$('.attachment-details .setting[data-setting=alt]').css('background-color','#FFE5E5');
+							$('.attachment-details .setting[data-setting=alt] input').select();
 					
 							return;
 						} else {

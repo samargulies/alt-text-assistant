@@ -42,7 +42,7 @@ class Alt_Text_Assistant {
 
 
 	// Register alt text column
-	function manage_media_columns($columns) {
+	function manage_media_columns( $columns ) {
 		$columns['alt_text_assistant_column'] = __('Alt text');
 		return $columns;
 	}
@@ -62,7 +62,7 @@ class Alt_Text_Assistant {
 	}
 
 	// Add tab to Media Library that displays only images without alt text
-	function views_upload($type_links){
+	function views_upload( $type_links ){
 
 		$empty_alt_args = array(
 			'post_type' => 'attachment',
@@ -73,25 +73,25 @@ class Alt_Text_Assistant {
 			'fields' => 'ids'
 		);
 		$empty_alts = get_posts( $empty_alt_args );	
-		$empty_alt_num = count($empty_alts);
+		$empty_alt_num = count( $empty_alts );
 
 		$class = (isset($_GET['orderby']) && 'alt_text_assistant_column' === $_GET['orderby'] ) ? ' class="current"' : '';
-		$type_links['alt_text_assistant'] = "<a href='upload.php?orderby=alt_text_assistant_column&status=alt_text_assistant'$class>" . sprintf( 'Images without alt text <span class="count">(%s)</span>', number_format_i18n( $empty_alt_num ) ) . '</a>';
+		
+		$type_links['alt_text_assistant'] = "<a href='upload.php?orderby=alt_text_assistant_column&status=alt_text_assistant'$class>" . __('Images without alt text', 'alt-text-assistant') . sprintf( ' <span class="count">(%s)</span>', number_format_i18n( $empty_alt_num ) ) . '</a>';
 
 	    return $type_links;
 	}
 
 	// Display alt text or link to edit image
 	function display_alt_text_column($column, $id) {
-	
 		if ( $column == 'alt_text_assistant_column' && wp_attachment_is_image( $id ) ) {
-		
+
 	      	$alt = get_post_meta( $id, '_wp_attachment_image_alt', true );
-		
-			if ( empty( $alt ) ) {
-				echo '<a href="' . get_edit_post_link( $id ).'#attachment_alt" class="alt_text_assistant-no-alt">'.__('Add alt text', 'alt_text_assistant') . '</a>';
 			
+			if ( empty( $alt ) ) {
+				echo '<a href="' . get_edit_post_link( $id ) . '#attachment_alt" class="alt_text_assistant-no-alt">' . __('Add alt text', 'alt_text_assistant') . '</a>';
 			} else  {
+				
 				// trim alt text to 100 characters
 				if( strlen($alt) > 100 ) {
 					$alt = substr($alt, 0, 100) . '&hellip;';
@@ -104,15 +104,14 @@ class Alt_Text_Assistant {
 	// Insert js to require alt text when inserting a single image
 	// TODO: only load when the media mananger is loaded
 	function admin_enqueue_scripts() {
-	
 		$options = get_option( self::$option_name );
 	
 		if( $options['require_alt_text'] ) {
-		
-			wp_enqueue_script( 'alt-text-assistant-require-alt-text', plugins_url('/alt-text-assistant.js', __FILE__), array('media-views') );
-		
+			wp_enqueue_script( 'alt-text-assistant', plugins_url('/alt-text-assistant.js', __FILE__), array('media-views') );
+			wp_localize_script( 'alt-text-assistant', 'altTextAssistant', array(
+				'alertMessage'  => __('Please add alt text to insert this image', 'alt-text-assistant'),
+			) );
 		}
-	
 	}
 
 	function settings_init() {
@@ -137,21 +136,14 @@ class Alt_Text_Assistant {
 	}
 
 	function validate_options( $options_raw ) {
-	
 		$options = array();
-	
 		$options['require_alt_text'] = ( $options_raw['require_alt_text'] ) ? 1 : 0;
-				
 		return $options;
 	}
 
 	function alt_text_settings_intro() {
-		?>
-		<p>Alternative text, or alt text, provides replacement content for users when images cannot be displayed normally. Specifying alt text assists many users, such as users who are visually impaired, or users who use speech synthesizers.</p>
-	
-		<p>It is required that all images contain accurate, descriptive alt text. When enabled, the setting below will force all users to enter alt text before they can insert images into a post or page.</p>
-	
-		<?php
+		echo '<p>' . __('Alternative text, or alt text, provides replacement content for users when images cannot be displayed normally. Specifying alt text assists many users, such as users who are visually impaired, or users who use speech synthesizers.', 'alt_text_assistant') . '</p>';
+		echo '<p>' . __('It is required that all images contain accurate, descriptive alt text. When enabled, the setting below will force all users to enter alt text before they can insert images into a post or page.', 'alt_text_assistant') . '</p>';
 	}
 
 	function require_alt_text_settings_field() {
@@ -161,7 +153,7 @@ class Alt_Text_Assistant {
 		?>
 		<label for="alt_text_assistant_require_alt_text_input">
 		<input id='alt_text_assistant_require_alt_text_input' name='alt_text_assistant[require_alt_text]' type='checkbox' value="1" <?php checked( $options['require_alt_text'], 1 ); ?> />
-		Require alt text when inserting images
+		<?php _e('Require alt text when inserting images', 'alt_text_assistant'); ?>
 		</label>
 		<?php
 	
